@@ -22,6 +22,9 @@ File me [[https://github.com/DennyZhang/kubernetes-security-practice/issues][Iss
 
 See more Kubernetes sharing from Denny: [[https://github.com/topics/denny-kubernetes][denny-kubernetes]]
 ** Questions
+*** Can I change volume as readonly after pod is created?
+*** "persistent disk on GCE" vs "regional persistent disk on GCE"
+kubernetes/pkg/cloudprovider/providers/gce/gce_disks.go
 *** Why I would need to host DB in containers?
 One big benefit of containerize is supporting fast changes. But I won't upgrade DB version that often.
 *** Performance penalty in DB container?
@@ -31,15 +34,15 @@ Why volume mount may result in db performance penalty?
    CLOSED: [2018-08-26 Sun 16:24]
 *** DONE why gitRepo volume type gets deprecated?
     CLOSED: [2018-08-26 Sun 16:22]
+
+Discussions for why it gets deprecated:
+- https://kubernetes.io/docs/concepts/storage/volumes/#gitrepo
+- https://github.com/kubernetes/kubernetes/issues/17676#issuecomment-183777396
+- https://github.com/kubernetes/kubernetes/issues/60999
+
 Use *initContainer* instead
-
-https://kubernetes.io/docs/concepts/storage/volumes/#gitrepo
-
-https://github.com/kubernetes/kubernetes/issues/17676#issuecomment-183777396
-
-https://github.com/kubernetes/kubernetes/issues/60999
-
-https://gist.github.com/tallclair/849601a16cebeee581ef2be50c351841
+- https://github.com/kubernetes/git-sync
+- https://gist.github.com/tallclair/849601a16cebeee581ef2be50c351841
 
 #+BEGIN_EXAMPLE
 # Example of using an InitContainer in place of a GitRepo volume.
