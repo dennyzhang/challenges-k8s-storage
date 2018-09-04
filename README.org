@@ -3,8 +3,6 @@
 :type:     storage
 :END:
 
-Blog URL: https://kubernetes.dennyzhang.com/challenges-k8s-storage, Category: [[https://kubernetes.dennyzhang.com/category/concept][concept]]
-
 #+BEGIN_HTML
 <a href="https://github.com/dennyzhang/challenges-k8s-storage"><img align="right" width="200" height="183" src="https://www.dennyzhang.com/wp-content/uploads/denny/watermark/github.png" /></a>
 
@@ -18,10 +16,19 @@ Blog URL: https://kubernetes.dennyzhang.com/challenges-k8s-storage, Category: [[
 <a href="http://makeapullrequest.com" target="_blank" rel="nofollow"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"/></a>
 #+END_HTML
 
+Blog URL: https://kubernetes.dennyzhang.com/challenges-k8s-storage, Category: [[https://kubernetes.dennyzhang.com/category/concept][concept]]
+
 File me [[https://github.com/DennyZhang/kubernetes-security-practice/issues][Issues]] or star [[https://github.com/DennyZhang/kubernetes-security-practice][this repo]].
 
 See more Kubernetes sharing from Denny: [[https://github.com/topics/denny-kubernetes][denny-kubernetes]]
 ** Questions
+*** Update configmap, after it has already been mounted to pod. Will the pod get the new version or the old version?
+*** empty_dir vs local vs flexvolume
+https://github.com/kubernetes/kubernetes/tree/v1.11.3/pkg/volume
+*** What's flex volume
+FlexVolume	Allows Creating Volume Plugins	FlexVolume enables users to develop Kubernetes volume plugins for vendor-provided storage.
+*** Deep dive into vsphereVolume
+vsphereVolume	VMDK	Stands for a virtual machine disk (VMDK) provided by the vSphere (VMware).
 *** Can I change volume as readonly after pod is created?
 *** "persistent disk on GCE" vs "regional persistent disk on GCE"
 kubernetes/pkg/cloudprovider/providers/gce/gce_disks.go
@@ -84,6 +91,48 @@ spec:
     - name: git-repo
       emptyDir: {}
 #+END_EXAMPLE
+** Volume types
+https://kubernetes.io/docs/concepts/storage/volumes/#types-of-volumes
+
+https://supergiant.io/blog/persistent-storage-with-persistent-volumes-in-kubernetes
+
+| Volume Name          | Storage Type                                             | Description                                                                                                                                                                                                                                                                          |
+|----------------------+----------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| gcePersistentDisk    | Block Storage                                            | A Google Compute Engine (GCE) Persistent Disk that provides SSD and HDD storage attached to nodes and pods in a K8s cluster.                                                                                                                                                         |
+| awsElasticBlockStore | Block Storage                                            | Amazon EBS volume is a persistent block storage volume offering consistent and low-latency performance.                                                                                                                                                                              |
+| azureFile            | Network File Shares                                      | Microsoft Azure file volumes are fully managed file shares in Microsoft Azure accessible via the industry standard Server Message Block (SMB) protocol.                                                                                                                              |
+| azureDisk            | Block Storage                                            | A Microsoft Azure data disk provides block storage with SSD and HDD options.                                                                                                                                                                                                         |
+| fc                   | Data Center Storage and Storage Area Networks (SAN)      | Fibre channel is a high-speed networking technology for the lossless delivery of raw block data. FC is primarily used in Storage Area Networks (SAN) and commercial data centers.                                                                                                    |
+| FlexVolume           | Allows Creating Volume Plugins                           | FlexVolume enables users to develop Kubernetes volume plugins for vendor-provided storage.                                                                                                                                                                                           |
+| flocker              | Container Data Storage and Management                    | Flocker is an open-source container data volume manager for Dockerized applications. The platform supports container portability across diverse storage types and cloud environments.                                                                                                |
+| nfs                  | Network File System                                      | NFS refers to a distributed file system protocol that allows users to access files over a computer network.                                                                                                                                                                          |
+| iscsi                | Networked Block Storage                                  | iSCSI (Internet Small Computer Systems Interface) is an IP-based storage networking protocol for connecting data storage facilities). It is used to facilitate data transfer over intranets and to manage storage over long distances by enabling location-independent data storage. |
+| rbd                  | Ceph Block Storage                                       | Ceph RADOS Block Device (RBD) is a building block of Ceph Block Storage that leverages RADOS capabilities such as snapshotting, consistency, and replication.                                                                                                                        |
+| cephfs               | Object Storage and Interfaces for Block and File Storage | Ceph is a storage platform that implements object storage on a distributed computer cluster.                                                                                                                                                                                         |
+| cinder               | Block Storage                                            | Cinder is a block storage service for openstack designed to provide storage resources to end users that can be used by the OpenStack Compute Project (Nova).                                                                                                                         |
+| glusterfs            | Networked File System                                    | Gluster is a distributed networked file system that aggregates storage from multiple servers into a single storage namespace.                                                                                                                                                        |
+| vsphereVolume        | VMDK                                                     | Stands for a virtual machine disk (VMDK) provided by the vSphere (VMware).                                                                                                                                                                                                           |
+| quobyte              | Data Center File System                                  | Quobyte volume plugin mounts Quobyte data center file system.                                                                                                                                                                                                                        |
+| hostPath             | Local Cluster File System                                | hostPath volumes mounts directories from the host node's filesystem into a pod.                                                                                                                                                                                                      |
+| portworxVolume       | Block Storage                                            | A portworxVolume is a Portworx's elastic block storage layer that runs hyperconverged with Kubernetes. Portworx's storage system is designed to aggregate capacity across multiple servers similarly to Gluster.                                                                     |
+| scaleIO              | Shared Block Networked Storage                           | ScaleIO is a software-defined storage product from Dell EMC that creates a server-based Storage Area Network (SAN) from local server storage. It is designed to convert direct-attached storage into shared block storage.                                                           |
+| storageos            | Block Storage                                            | StorageOS aggregates storage across a cluster of servers and exposes it as high-throughput and low-latency block storage.                                                                                                                                                            |
+
+** Volume: local hostPath
+Minikube supports PersistentVolumes of type hostPath. These PersistentVolumes are mapped to a directory inside the Minikube VM.
+
+https://github.com/kubernetes/minikube/blob/master/docs/persistent_volumes.md
+
+https://github.com/kubernetes-incubator/external-storage/tree/master/local-volume
+
+https://scalablesystem.design/ds101/local-volume/
+
+There are many problems with hostPath, just to name a few:
+
+- Unmanaged volume lifecycle
+- Possible path collisions
+- Too many privileges
+- Not portable
 ** Portworx
 https://portworx.com/
 ** More Resources
@@ -106,3 +155,4 @@ https://portworx.com/
 #+SEQ_TODO: TODO HALF ASSIGN | DONE BYPASS DELEGATE CANCELED DEFERRED
 #+LINK_UP:   
 #+LINK_HOME: 
+* TODO rook: https://github.com/rook/rook                          :noexport:
